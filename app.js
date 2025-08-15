@@ -4,6 +4,8 @@ const app = express();
 // Replit assigns a random port through process.env.PORT.
 // We use 3000 as a fallback for local development.
 const port = process.env.PORT || 3000;
+const cors = require('cors');
+app.use(cors());
 
 // Define your product list
 const products = [
@@ -17,13 +19,12 @@ const products = [
 
 // Basic route - remains the same
 app.get('/', (req, res) => {
-  res.json(products);
+  res.send('Welcome to the API for products of Nil Gastronomie')
 });
 
 // NEW ROUTE: To send the product list as JSON
 app.get('/api/products', (req, res) => {
-  // res.json() automatically sets the Content-Type header to application/json
-  // and converts the JavaScript object/array into a JSON string.
+  const products = db.prepare('SELECT * FROM products').all();
   res.json(products);
 });
 
