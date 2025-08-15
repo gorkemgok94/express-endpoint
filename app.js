@@ -5,7 +5,7 @@ const port = 3000;
 
 // Basic route
 app.get('/', (req, res) => {
-  res.send('I love you so much!');
+  res.send('Komagene Ethem dünyanın en iyi çiğköftesici!');
 });
 
 // Start server
