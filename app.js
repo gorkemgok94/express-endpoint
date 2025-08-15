@@ -7,7 +7,7 @@ const port = process.env.PORT || 3000;
 
 // Define your product list
 const products = [
-  { id: 1, name: 'Cola', category: 'Drinks', price: 1.50, available: true },
+  { id: 1, name: 'Baum Tomaten', category: 'Drinks', price: 1.50, available: true, imageUrl: 'https://imgur.com/KYjyxbM'  },
   { id: 2, name: 'Eisberg Salat', category: 'Vegetables', price: 2.20, available: true },
   { id: 3, name: 'Pizza Karton', category: 'Packaging', price: 0.10, available: true },
   { id: 4, name: 'Milk (1L)', category: 'Dairy', price: 0.99, available: false }, // Example of an unavailable product
