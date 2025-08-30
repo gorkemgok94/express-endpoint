@@ -6,7 +6,7 @@ const db = new Database('products.db'); // this file will be created if not exis
 db.prepare(`
   CREATE TABLE IF NOT EXISTS products (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT,
+    name TEXT UNIQUE,
     category TEXT,
     price REAL,
     available INTEGER,
@@ -14,20 +14,35 @@ db.prepare(`
   )
 `).run();
 
-// Seed initial data if empty
-const existing = db.prepare('SELECT COUNT(*) AS count FROM products').get();
-if (existing.count === 0) {
-  const insert = db.prepare(`
-    INSERT INTO products (name, category, price, available, imageUrl)
-    VALUES (?, ?, ?, ?, ?)
-  `);
+// --- Improved Seeding Logic ---
 
-  insert.run('Baum Tomaten', 'Drinks', 1.50, 1, 'https://imgur.com/KYjyxbM');
-  insert.run('Eisberg Salat', 'Vegetables', 2.20, 1, null);
-  insert.run('Pizza Karton', 'Packaging', 0.10, 1, null);
-  insert.run('Milk (1L)', 'Dairy', 0.99, 0, null);
-  insert.run('Organic Eggs (6-pack)', 'Dairy', 3.49, 1, null);
-  insert.run('Baguette', 'Bakery', 1.20, 1, null);
+// 1. Define the initial data in an array
+const initialProducts = [
+  { name: 'Baum Tomaten', category: 'Drinks', price: 1.50, available: 1, imageUrl: 'https://imgur.com/KYjyxbM' },
+  { name: 'Eisberg Salat', category: 'Vegetables', price: 2.20, available: 1, imageUrl: null },
+  { name: 'Pizza Karton', category: 'Packaging', price: 0.10, available: 1, imageUrl: null },
+  { name: 'Milk (1L)', category: 'Dairy', price: 0.99, available: 0, imageUrl: null },
+  { name: 'Organic Eggs (6-pack)', category: 'Dairy', price: 3.49, available: 1, imageUrl: null },
+  { name: 'Baguette', category: 'Bakery', price: 1.20, available: 1, imageUrl: null }
+];
+
+// 2. Prepare the statements for checking and inserting
+const findProduct = db.prepare('SELECT * FROM products WHERE name = ?');
+const insertProduct = db.prepare(`
+  INSERT INTO products (name, category, price, available, imageUrl)
+  VALUES (@name, @category, @price, @available, @imageUrl)
+`);
+
+// 3. Loop through each product and add it only if it doesn't exist
+console.log('Running database seeder...');
+for (const product of initialProducts) {
+  const existing = findProduct.get(product.name);
+  if (!existing) {
+    insertProduct.run(product);
+    console.log(` -> Added product: ${product.name}`);
+  }
 }
+console.log('Seeder finished.');
+
 
 module.exports = db;
