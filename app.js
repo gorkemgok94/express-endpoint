@@ -1,4 +1,5 @@
 // app.js
+require('dotenv').config();
 const express = require('express');
 const app = express();
 const port = process.env.PORT || 3000;
@@ -21,11 +22,10 @@ app.get('/api/products', (req, res) => {
 
 app.post('/api/order', async (req, res) => {
   const { name, cart } = req.body;
-  try {
-    const info = await sendOrderEmail(name, cart);
-    res.status(200).json({ message: 'Order sent!', info });
-  } catch (error) {
-    console.error(error);
+  const success = await sendOrderEmail(name, cart);
+  if (success) {
+    res.status(200).json({ message: 'Order sent!' });
+  } else {
     res.status(500).json({ message: 'Failed to send order email.' });
   }
 });
