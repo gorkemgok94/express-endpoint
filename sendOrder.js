@@ -16,10 +16,16 @@ function sendOrderEmail(name, cart, callback) {
     text: `Name: ${name}\nOrder:\n${cart.join('\n')}`,
   };
 
-  transporter.sendMail(mailOptions, (error, info) => {
-    // This will call the callback you provide from app.js
-    callback(error, info);
-  });
+  // Use a default callback if none is provided
+  const cb = typeof callback === 'function' ? callback : (error, info) => {
+    if (error) {
+      console.error(error);
+    } else {
+      console.log('Email sent: ' + info.response);
+    }
+  };
+
+  transporter.sendMail(mailOptions, cb);
 }
 
 module.exports = sendOrderEmail;
