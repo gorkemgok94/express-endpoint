@@ -8,19 +8,17 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-function sendOrderEmail(name, cart) {
+function sendOrderEmail(name, cart, callback) {
   const mailOptions = {
     from: 'nilgastrobestellung@gmail.com',
-    to: 'gorkemgok2019@gmail.com', // or another recipient
+    to: 'gorkemgok2019@gmail.com',
     subject: 'New Order',
     text: `Name: ${name}\nOrder:\n${cart.join('\n')}`,
   };
 
   transporter.sendMail(mailOptions, (error, info) => {
-    if (error) {
-      return console.log(error);
-    }
-    console.log('Email sent: ' + info.response);
+    // This will call the callback you provide from app.js
+    callback(error, info);
   });
 }
 

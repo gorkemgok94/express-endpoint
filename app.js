@@ -21,8 +21,13 @@ app.get('/api/products', (req, res) => {
 
 app.post('/api/order', (req, res) => {
   const { name, cart } = req.body;
-  sendOrderEmail(name, cart);
-  res.status(200).json({ message: 'Order sent!' });
+  sendOrderEmail(name, cart, (error, info) => {
+    if (error) {
+      console.error(error);
+      return res.status(500).json({ message: 'Failed to send order email.' });
+    }
+    res.status(200).json({ message: 'Order sent!', info: info.response });
+  });
 });
 
 // Start server
