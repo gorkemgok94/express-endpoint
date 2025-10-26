@@ -23,7 +23,7 @@ app.get('/api/products', (req, res) => {
 });
 
 app.post('/api/order', async (req, res) => {
-  const { name, cart } = req.body;
+  const { name, cart, address } = req.body;
 
   try {
     await resend.emails.send({
@@ -32,6 +32,7 @@ app.post('/api/order', async (req, res) => {
       subject: `Neue Bestellung von ${name}`,
       html: `
         <h2>Bestellung von ${name}</h2>
+        <p>Lieferadresse: ${address}</p>
         <ul>
           ${cart.map(item => `<li>${item.name} × ${item.quantity}</li>`).join('')}
         </ul>
